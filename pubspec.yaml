@@ -1,0 +1,24 @@
+name: fl_keyboard
+description: A new Flutter project.
+version: 0.0.1
+repository: https://github.com/Wayaer/fl_keyboard.git
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_lints: ^2.0.2
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: fl.keyboard
+        pluginClass: FlKeyboardPlugin
+      ios:
+        pluginClass: FlKeyboardPlugin
