@@ -3,6 +3,8 @@ package fl.keyboard
 import android.inputmethodservice.InputMethodService
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import io.flutter.FlutterInjector
 import io.flutter.embedding.android.FlutterView
 import io.flutter.embedding.engine.FlutterEngine
@@ -13,20 +15,26 @@ import io.flutter.embedding.engine.dart.DartExecutor.DartEntrypoint
 
 class FlKeyboardService : InputMethodService() {
     private val mainName = "flKeyboardMain"
-    private lateinit var flKeyboardEngine: FlutterEngine
+    private var flKeyboardEngine: FlutterEngine? = null
     private lateinit var flutterView: FlutterView
 
 
     override fun onCreate() {
         super.onCreate()
-        flutterView = FlutterView(applicationContext)
-        val engineGroup = FlutterEngineGroup(applicationContext)/*topMain 是跳转Flutter 执行的方法*/
-        val dartEntrypoint = DartEntrypoint(
-            FlutterInjector.instance().flutterLoader().findAppBundlePath(), mainName
-        )
-        flKeyboardEngine = engineGroup.createAndRunEngine(applicationContext, dartEntrypoint)
-        flutterView.attachToFlutterEngine(flKeyboardEngine)
-        FlutterEngineCache.getInstance().put(mainName, flKeyboardEngine)
+        if (flKeyboardEngine == null) {
+            flutterView = FlutterView(applicationContext)
+            val engineGroup = FlutterEngineGroup(applicationContext)
+            val dartEntrypoint = DartEntrypoint(
+                FlutterInjector.instance().flutterLoader().findAppBundlePath(), mainName
+            )
+            flKeyboardEngine = engineGroup.createAndRunEngine(applicationContext, dartEntrypoint)
+            flutterView.attachToFlutterEngine(flKeyboardEngine!!)
+            val displayMetrics = resources.displayMetrics
+            val width = displayMetrics.widthPixels
+            val height = displayMetrics.heightPixels
+            Log.d("FlKeyboardService===", flutterView.height.toString())
+            FlutterEngineCache.getInstance().put(mainName, flKeyboardEngine)
+        }
         Log.d("FlKeyboardService===", "onCreate")
     }
 
@@ -45,7 +53,10 @@ class FlKeyboardService : InputMethodService() {
 
     override fun onDestroy() {
         super.onDestroy()
-        flKeyboardEngine.destroy()
+        Log.d("FlKeyboardService===", "onDestroy")
+        flutterView.detachFromFlutterEngine()
+        flKeyboardEngine?.destroy()
+        flKeyboardEngine = null
     }
 
     override fun onFinishInput() {

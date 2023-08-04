@@ -11,17 +11,15 @@ void main() {
 }
 
 void flKeyboardMain() {
-  runApp(SizedBox(
-    height: 100,
-    child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData.light(useMaterial3: true),
-        darkTheme: ThemeData.dark(useMaterial3: true),
-        home: Container(
-            alignment: Alignment.center,
-            width: double.infinity,
-            child: const Text('这是flKeyboardMain'))),
-  ));
+  runApp(MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData.light(useMaterial3: true),
+      darkTheme: ThemeData.dark(useMaterial3: true),
+      home: Container(
+          color: Colors.white,
+          alignment: Alignment.center,
+          width: double.infinity,
+          child: const Text('这是flKeyboardMain'))));
 }
 
 class MyApp extends StatefulWidget {

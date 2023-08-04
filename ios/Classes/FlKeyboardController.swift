@@ -1,8 +1,9 @@
-import UIKit
 import Flutter
+import UIKit
 
 open class FlKeyboardController: UIInputViewController {
-    @IBOutlet var nextKeyboardButton: UIButton!
+    public var flKeyboardEngine = FlutterEngine(name: "flKeyboardMain")
+    public var flutterView: FlutterViewController?
     
     override public func updateViewConstraints() {
         super.updateViewConstraints()
@@ -11,26 +12,21 @@ open class FlKeyboardController: UIInputViewController {
     
     override public func viewDidLoad() {
         super.viewDidLoad()
-     
-        // Perform custom UI setup here
-        self.nextKeyboardButton = UIButton(type: .system)
-        
-        self.nextKeyboardButton.setTitle(NSLocalizedString("Next Keyboard", comment: "Title for 'Next Keyboard' button"), for: [])
-        self.nextKeyboardButton.sizeToFit()
-        self.nextKeyboardButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        self.nextKeyboardButton.addTarget(self, action: #selector(handleInputModeList(from:with:)), for: .allTouchEvents)
-        
-        self.view.addSubview(self.nextKeyboardButton)
-        
-        self.nextKeyboardButton.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
-        self.nextKeyboardButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        self.flutterView = FlutterViewController(
+            engine: self.flKeyboardEngine,
+            nibName: nil,
+            bundle: nil)
+        self.flKeyboardEngine.run(withEntrypoint: "flKeyboardMain")
+        print("viewDidLoad=====")
+        self.view.addSubview(self.flutterView!.view)
+        addChild(self.flutterView!)
+        view.addSubview(self.flutterView!.view)
+        self.flutterView!.didMove(toParent: self)
     }
     
     override public func viewWillLayoutSubviews() {
-        self.nextKeyboardButton.isHidden = !self.needsInputModeSwitchKey
         super.viewWillLayoutSubviews()
-        print("viewDidLoad=====")
+        print("viewWillLayoutSubviews=====")
     }
     
     override public func textWillChange(_ textInput: UITextInput?) {
@@ -41,14 +37,10 @@ open class FlKeyboardController: UIInputViewController {
     override public func textDidChange(_ textInput: UITextInput?) {
         print("textDidChange=====")
         // The app has just changed the document's contents, the document context has been updated.
-        
-        var textColor: UIColor
-        let proxy = self.textDocumentProxy
-        if proxy.keyboardAppearance == UIKeyboardAppearance.dark {
-            textColor = UIColor.white
-        } else {
-            textColor = UIColor.black
-        }
-        self.nextKeyboardButton.setTitleColor(textColor, for: [])
+    }
+    
+    override open func delete(_ sender: Any?) {
+        self.flutterView?.delete(nil)
+        self.flutterView = nil
     }
 }
