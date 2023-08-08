@@ -1,61 +1,52 @@
-import Flutter
 import UIKit
+import Flutter
 
 class KeyboardViewController: UIInputViewController {
-    public var flKeyboardEngine = FlutterEngine(name: "flKeyboardMain")
+    public var engine: FlutterEngine?
     public var flutterView: FlutterViewController?
     @IBOutlet var nextKeyboardButton: UIButton!
     
-    override public func updateViewConstraints() {
-        super.updateViewConstraints()
-        print("updateViewConstraints=====")
-    }
-    
-    override public func viewDidLoad() {
-        super.viewDidLoad()
+    convenience init() {
+        self.init()
+        print("init=====")
+        let engineGroup = FlutterEngineGroup(name: "flKeyboardMain", project: nil)
+        engine = engineGroup.makeEngine(withEntrypoint: "flKeyboardMain", libraryURI: nil)
         self.flutterView = FlutterViewController(
-            engine: self.flKeyboardEngine,
+            engine: self.engine!,
             nibName: nil,
             bundle: nil)
-        self.flKeyboardEngine.run(withEntrypoint: "flKeyboardMain")
-        print("viewDidLoad=====")
-        self.view.addSubview(self.flutterView!.view)
-        view.addSubview(self.flutterView!.view)
-     
-        // Perform custom UI setup here
-//        self.nextKeyboardButton = UIButton(type: .system)
-//
-//        self.nextKeyboardButton.setTitle(NSLocalizedString("Next Keyboard", comment: "Title for 'Next Keyboard' button"), for: [])
-//        self.nextKeyboardButton.sizeToFit()
-//        self.nextKeyboardButton.translatesAutoresizingMaskIntoConstraints = false
-//
-//        self.nextKeyboardButton.addTarget(self, action: #selector(handleInputModeList(from:with:)), for: .allTouchEvents)
-//
-//        self.view.addSubview(self.nextKeyboardButton)
-//
-//        self.nextKeyboardButton.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
-//        self.nextKeyboardButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-    }
-    
-    override public func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        self.nextKeyboardButton.isHidden = !self.needsInputModeSwitchKey
-        print("viewWillLayoutSubviews=====")
+        self.engine!.run()
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        print("viewWillAppear=====")
-        print("hasFullAccess \(hasFullAccess)")
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        print("viewDidLoad=====")
+        // Perform custom UI setup here
+        self.nextKeyboardButton = UIButton(type: .system)
+//        let flutterViewController = FlutterViewController(project: nil, initialRoute: "/ext", nibName: nil, bundle: nil)
+//        print(flutterViewController.engine)
+//        present(flutterViewController, animated: true)
+//
+        self.nextKeyboardButton.setTitle(NSLocalizedString("Next Keyboard", comment: "Title for 'Next Keyboard' button"), for: [])
+        self.nextKeyboardButton.sizeToFit()
+        self.nextKeyboardButton.translatesAutoresizingMaskIntoConstraints = false
+        self.nextKeyboardButton.addTarget(self, action: #selector(handleInputModeList(from:with:)), for: .allTouchEvents)
+        self.view.addSubview(self.nextKeyboardButton)
+    
+        self.nextKeyboardButton.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+        self.nextKeyboardButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
     }
     
-    override public func textWillChange(_ textInput: UITextInput?) {
-        print("textWillChange=====")
+    override func viewWillLayoutSubviews() {
+        self.nextKeyboardButton.isHidden = !self.needsInputModeSwitchKey
+        super.viewWillLayoutSubviews()
+    }
+    
+    override func textWillChange(_ textInput: UITextInput?) {
         // The app is about to change the document's contents. Perform any preparation here.
     }
     
-    override public func textDidChange(_ textInput: UITextInput?) {
-        print("textDidChange=====")
-  
+    override func textDidChange(_ textInput: UITextInput?) {
         // The app has just changed the document's contents, the document context has been updated.
         
         var textColor: UIColor
@@ -66,14 +57,5 @@ class KeyboardViewController: UIInputViewController {
             textColor = UIColor.black
         }
         self.nextKeyboardButton.setTitleColor(textColor, for: [])
-    }
-
-    override open func delete(_ sender: Any?) {}
-    
-    override func dismissKeyboard() {}
-    
-    func isOpenAccessGranted() -> Bool {
-        UIPasteboard.general.string = "CHECK"
-        return UIPasteboard.general.hasStrings
     }
 }

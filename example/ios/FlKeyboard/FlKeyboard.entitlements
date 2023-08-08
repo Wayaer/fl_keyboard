@@ -3,9 +3,6 @@
 <plist version="1.0">
 <dict>
 	<key>com.apple.security.application-groups</key>
-	<array>
-		<string>group.com.server.tools.app</string>
-		<string>group.com.server.tools.app.keyboard</string>
-	</array>
+	<array/>
 </dict>
 </plist>

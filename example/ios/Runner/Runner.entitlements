@@ -5,7 +5,6 @@
 	<key>com.apple.security.application-groups</key>
 	<array>
 		<string>group.com.server.tools.app</string>
-		<string>group.com.server.tools.app.keyboard</string>
 	</array>
 </dict>
 </plist>
