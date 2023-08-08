@@ -6,6 +6,7 @@ void main() {
   runApp(const MainApp());
 }
 
+@pragma('vm:entry-point')
 void flKeyboardMain() {
   runApp(const KeyboardApp());
 }

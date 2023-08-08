@@ -11,6 +11,7 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.FlutterEngineCache
 import io.flutter.embedding.engine.FlutterEngineGroup
 import io.flutter.embedding.engine.dart.DartExecutor.DartEntrypoint
+import io.flutter.view.FlutterNativeView
 import java.lang.reflect.Field
 
 
@@ -30,14 +31,8 @@ class FlKeyboardService : InputMethodService() {
                 FlutterInjector.instance().flutterLoader().findAppBundlePath(), mainName
             )
             flKeyboardEngine = engineGroup.createAndRunEngine(applicationContext, dartEntrypoint)
-
-            flutterView.attachToFlutterEngine(flKeyboardEngine!!)
             FlutterEngineCache.getInstance().put(mainName, flKeyboardEngine)
-//            FlutterEngineCache.getInstance().cachedEngines
-            val clazz = FlutterEngineCache::class.java
-            val field: Field = clazz.getDeclaredField("cachedEngines")
-            field.isAccessible = true
-            val value = field.get(FlutterEngineCache.getInstance())
+            flutterView.attachToFlutterEngine(flKeyboardEngine!!)
             val displayMetrics = resources.displayMetrics
             val height = displayMetrics.heightPixels
             container = FrameLayout(this)
@@ -66,7 +61,10 @@ class FlKeyboardService : InputMethodService() {
         super.onDestroy()
         Log.d("FlKeyboardService===", "onDestroy")
         flutterView.detachFromFlutterEngine()
-        flKeyboardEngine?.destroy()
+        flKeyboardEngine?.let {
+            FlutterEngineCache.getInstance().remove(mainName)
+            it.destroy()
+        }
         flKeyboardEngine = null
     }
 
