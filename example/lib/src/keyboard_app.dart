@@ -25,20 +25,27 @@ class _HomeAppState extends State<HomeApp> {
   @override
   Widget build(BuildContext context) {
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      const SizedBox(
-          width: double.infinity,
-          height: 100,
-          child: FlAnimationWave(
-              value: 0.5,
-              color: Colors.deepPurpleAccent,
-              direction: Axis.vertical)),
       ElevatedButton(
           onPressed: () {
             print('ElevatedButton====');
             ScaffoldMessenger.of(context)
                 .showSnackBar(const SnackBar(content: Text('SnackBar')));
           },
-          child: const Text('showSnackBar'))
+          child: const Text('showSnackBar')),
+      CountDown(
+          onChanged: (int i) {},
+          periodic: 1,
+          duration: const Duration(seconds: 500),
+          builder: (int i) => Universal(
+              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+              child: Text(i.toString()))),
+      const SizedBox(
+          width: double.infinity,
+          height: 50,
+          child: FlAnimationWave(
+              value: 0.5,
+              color: Colors.deepPurpleAccent,
+              direction: Axis.vertical)),
     ]);
   }
 }
