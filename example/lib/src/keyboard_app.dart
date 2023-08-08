@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_waya/flutter_waya.dart';
 
 class KeyboardApp extends StatelessWidget {
   const KeyboardApp({super.key});
@@ -9,9 +10,7 @@ class KeyboardApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData.light(useMaterial3: true),
         darkTheme: ThemeData.dark(useMaterial3: true),
-        home: const Scaffold(
-            backgroundColor: Colors.grey,
-            body: Padding(padding: EdgeInsets.all(20.0), child: HomeApp())));
+        home: const Scaffold(backgroundColor: Colors.grey, body: HomeApp()));
   }
 }
 
@@ -26,8 +25,13 @@ class _HomeAppState extends State<HomeApp> {
   @override
   Widget build(BuildContext context) {
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      const SizedBox(width: double.infinity),
-      const Text('这里是 flKeyboardMain'),
+      const SizedBox(
+          width: double.infinity,
+          height: 100,
+          child: FlAnimationWave(
+              value: 0.5,
+              color: Colors.deepPurpleAccent,
+              direction: Axis.vertical)),
       ElevatedButton(
           onPressed: () {
             print('ElevatedButton====');
