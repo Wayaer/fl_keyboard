@@ -1,14 +1,17 @@
-import UIKit
 import Flutter
+import UIKit
 
 class KeyboardViewController: UIInputViewController {
+    private var stackView = UIStackView()
     public var engine: FlutterEngine?
     public var flutterView: FlutterViewController?
-    @IBOutlet var nextKeyboardButton: UIButton!
+    override func updateViewConstraints() {
+        super.updateViewConstraints()
+        // Add custom view sizing constraints here
+    }
     
-    convenience init() {
-        self.init()
-        print("init=====")
+    override func viewDidLoad() {
+        super.viewDidLoad()
         let engineGroup = FlutterEngineGroup(name: "flKeyboardMain", project: nil)
         engine = engineGroup.makeEngine(withEntrypoint: "flKeyboardMain", libraryURI: nil)
         self.flutterView = FlutterViewController(
@@ -16,29 +19,18 @@ class KeyboardViewController: UIInputViewController {
             nibName: nil,
             bundle: nil)
         self.engine!.run()
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        print("viewDidLoad=====")
-        // Perform custom UI setup here
-        self.nextKeyboardButton = UIButton(type: .system)
-//        let flutterViewController = FlutterViewController(project: nil, initialRoute: "/ext", nibName: nil, bundle: nil)
-//        print(flutterViewController.engine)
-//        present(flutterViewController, animated: true)
-//
-        self.nextKeyboardButton.setTitle(NSLocalizedString("Next Keyboard", comment: "Title for 'Next Keyboard' button"), for: [])
-        self.nextKeyboardButton.sizeToFit()
-        self.nextKeyboardButton.translatesAutoresizingMaskIntoConstraints = false
-        self.nextKeyboardButton.addTarget(self, action: #selector(handleInputModeList(from:with:)), for: .allTouchEvents)
-        self.view.addSubview(self.nextKeyboardButton)
-    
-        self.nextKeyboardButton.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
-        self.nextKeyboardButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        // 获取屏幕的宽度和高度
+        let screenWidth = UIScreen.main.bounds.size.width
+        let screenHeight = UIScreen.main.bounds.size.height
+        self.stackView.frame = CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight)
+        self.stackView.backgroundColor = UIColor.red
+//        present(self.flutterView!, animated: true, completion: nil)
+//        self.stackView.addSubview(self.flutterView!.view)
+        self.view.addSubview(self.stackView)
     }
     
     override func viewWillLayoutSubviews() {
-        self.nextKeyboardButton.isHidden = !self.needsInputModeSwitchKey
+//        self.nextKeyboardButton.isHidden = !self.needsInputModeSwitchKey
         super.viewWillLayoutSubviews()
     }
     
@@ -56,6 +48,6 @@ class KeyboardViewController: UIInputViewController {
         } else {
             textColor = UIColor.black
         }
-        self.nextKeyboardButton.setTitleColor(textColor, for: [])
+//        self.nextKeyboardButton.setTitleColor(textColor, for: [])
     }
 }
