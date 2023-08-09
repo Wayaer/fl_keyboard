@@ -2,9 +2,6 @@ import Flutter
 import UIKit
 
 class KeyboardViewController: UIInputViewController {
-    private var stackView = UIStackView()
-    public var engine: FlutterEngine?
-    public var flutterView: FlutterViewController?
     override func updateViewConstraints() {
         super.updateViewConstraints()
         // Add custom view sizing constraints here
@@ -12,21 +9,19 @@ class KeyboardViewController: UIInputViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let engineGroup = FlutterEngineGroup(name: "flKeyboardMain", project: nil)
-        engine = engineGroup.makeEngine(withEntrypoint: "flKeyboardMain", libraryURI: nil)
-        self.flutterView = FlutterViewController(
-            engine: self.engine!,
-            nibName: nil,
-            bundle: nil)
-        self.engine!.run()
-        // 获取屏幕的宽度和高度
+        let engineGroup = FlutterEngineGroup(name: "flKeyboardMain", project: FlutterDartProject(precompiledDartBundle: Bundle(for: Self.self)))
+        let engine = engineGroup.makeEngine(withEntrypoint: "flKeyboardMain", libraryURI: nil)
+//        let engine = FlutterEngine()
+        engine.run()
+        let flutterView = FlutterViewController(engine: engine, nibName: nil, bundle: nil)
+        let stackView = UIStackView()
         let screenWidth = UIScreen.main.bounds.size.width
         let screenHeight = UIScreen.main.bounds.size.height
-        self.stackView.frame = CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight)
-        self.stackView.backgroundColor = UIColor.red
-//        present(self.flutterView!, animated: true, completion: nil)
-//        self.stackView.addSubview(self.flutterView!.view)
-        self.view.addSubview(self.stackView)
+        stackView.frame = CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight)
+        stackView.backgroundColor = UIColor.red
+        stackView.addSubview(flutterView.view)
+//        self.view.addSubview(stackView)
+        self.view.addSubview(flutterView.view)
     }
     
     override func viewWillLayoutSubviews() {
